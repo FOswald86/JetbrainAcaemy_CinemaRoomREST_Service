@@ -1,22 +1,12 @@
 package cinema;
 
-public class Seat {
-    private Integer row;
-    private Integer column;
-    private Integer price;
+public class Seats {
+    private int row;
+    private int column;
 
-    public Seat( Integer row, Integer column, Integer price ) {
+    public Seats( int row, int column ) {
         this.row = row;
         this.column = column;
-        this.price = price;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice( int price ) {
-        this.price = price;
     }
 
     public int getRow() {

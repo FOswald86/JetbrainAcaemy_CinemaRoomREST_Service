@@ -110,12 +110,6 @@ files:
     management.endpoints.web.exposure.include=*
     management.endpoint.shutdown.enabled=true
   learner_created: false
-- name: src/cinema/Seat.java
-  visible: true
-  learner_created: true
-- name: src/cinema/Seat.java
-  visible: true
-  learner_created: true
 - name: src/cinema/Room.java
   visible: true
   learner_created: true
@@ -125,7 +119,10 @@ files:
 - name: hs_err_pid39848.log
   visible: true
   learner_created: true
-feedback_link: https://hyperskill.org/projects/189/stages/945/implement#comment
+- name: src/cinema/Seats.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/13375#comment
 status: Failed
 feedback:
   message: Failed to launch checking
