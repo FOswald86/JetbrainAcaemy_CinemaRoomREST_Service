@@ -1,7 +1,6 @@
 package cinema;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +15,7 @@ public class Room {
     @JsonIgnore
     private ArrayList<Ticket> purchasedTickets = new ArrayList<>();
     @JsonIgnore
-    private final int SWITCH_PRICE = 4, HIGHER_PRICE = 10, LOWER_PRICE = 8;
+    private final int PRICE_SWITCH = 4, PRICE_HIGH = 10, PRICE_LOW = 8;
 
     public Room( int total_rows, int total_columns ) {
         this.total_rows = total_rows;
@@ -27,7 +26,7 @@ public class Room {
     private void initAllSeats( int total_rows, int total_columns ) {
         for ( int i = 1; i <= total_rows; i++ ) {
             for ( int j = 1; j <= total_columns; j++ ) {
-                available_seats.add( new Seat( i, j, i <= SWITCH_PRICE ? HIGHER_PRICE : LOWER_PRICE ) );
+                available_seats.add( new Seat( i, j, i <= PRICE_SWITCH ? PRICE_HIGH : PRICE_LOW ) );
             }
         }
     }
@@ -63,16 +62,13 @@ public class Room {
 
     public ResponseEntity<?> refund( Ticket ticket ) {
 
-        // search for
+        // search for + restore available seat + remove sold ticket
         for ( int i = 0; i < purchasedTickets.size(); i++ ) {
 
             if ( purchasedTickets.get( i ).getToken().equals( ticket.getToken() ) ) {
 
                 available_seats.add( purchasedTickets.get( i ).getTicket() );
-
-                ReturnedTicket returned_ticket = new ReturnedTicket();
-                returned_ticket.setReturned_ticket( purchasedTickets.get( i ).getTicket() );
-
+                ReturnedTicket returned_ticket = new ReturnedTicket( purchasedTickets.get( i ).getTicket() );
                 purchasedTickets.remove( purchasedTickets.get( i ) );
 
                 return new ResponseEntity<>( returned_ticket, HttpStatus.OK );
@@ -96,18 +92,18 @@ public class Room {
     }
 
     @JsonIgnore
-    public int getSWITCH_PRICE() {
-        return SWITCH_PRICE;
+    public int getPRICE_SWITCH() {
+        return PRICE_SWITCH;
     }
 
     @JsonIgnore
     public int getHIGHER_PRICE() {
-        return HIGHER_PRICE;
+        return PRICE_HIGH;
     }
 
     @JsonIgnore
-    public int getLOWER_PRICE() {
-        return LOWER_PRICE;
+    public int getPRICE_LOW() {
+        return PRICE_LOW;
     }
 
     public int getTotal_rows() {
