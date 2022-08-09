@@ -1,12 +1,22 @@
 package cinema;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Room {
 
     private int total_rows;
     private int total_columns;
-    private ArrayList<Seats> available_seats = new ArrayList<>();
+    private ArrayList<Seat> available_seats = new ArrayList<>();
+    @JsonIgnore
+    private ArrayList<Ticket> purchasedTickets = new ArrayList<>();
+    @JsonIgnore
+    private final int SWITCH_PRICE = 4, HIGHER_PRICE = 10, LOWER_PRICE = 8;
 
     public Room( int total_rows, int total_columns ) {
         this.total_rows = total_rows;
@@ -17,10 +27,87 @@ public class Room {
     private void initAllSeats( int total_rows, int total_columns ) {
         for ( int i = 1; i <= total_rows; i++ ) {
             for ( int j = 1; j <= total_columns; j++ ) {
-                Seats seat = new Seats( i, j );
-                available_seats.add( seat );
+                available_seats.add( new Seat( i, j, i <= SWITCH_PRICE ? HIGHER_PRICE : LOWER_PRICE ) );
             }
         }
+    }
+
+    public ResponseEntity<?> purchase( Seat seat ) {
+
+        int column = seat.getColumn();
+        int row = seat.getRow();
+
+        // validate row & column input
+        if ( column > 9 || row > 9 || row < 1 || column < 1 ) {
+            return new ResponseEntity<>( Map.of( "error", "The number of a row or a column is out of bounds!" )
+                    , HttpStatus.BAD_REQUEST );
+        }
+
+        // check seat available + generate Ticket + purchase(remove from availableSeats array)
+        for ( int i = 0; i < this.getAvailable_seats().size(); i++ ) {
+
+            seat = this.getAvailable_seats().get( i );
+
+            if ( seat.getRow() == row && seat.getColumn() == column ) {
+                Ticket ticket = new Ticket( seat );
+                this.getPurchasedTickets().add( ticket );
+                this.getAvailable_seats().remove( i );
+                return new ResponseEntity<>( ticket, HttpStatus.OK );
+            }
+        }
+
+        // if not found
+        return new ResponseEntity<>( Map.of( "error", "The ticket has been already purchased!" )
+                , HttpStatus.BAD_REQUEST );
+    }
+
+    public ResponseEntity<?> refund( Ticket ticket ) {
+
+        // search for
+        for ( int i = 0; i < purchasedTickets.size(); i++ ) {
+
+            if ( purchasedTickets.get( i ).getToken().equals( ticket.getToken() ) ) {
+
+                available_seats.add( purchasedTickets.get( i ).getTicket() );
+
+                ReturnedTicket returned_ticket = new ReturnedTicket();
+                returned_ticket.setReturned_ticket( purchasedTickets.get( i ).getTicket() );
+
+                purchasedTickets.remove( purchasedTickets.get( i ) );
+
+                return new ResponseEntity<>( returned_ticket, HttpStatus.OK );
+            }
+        }
+
+        // if not found
+        return new ResponseEntity<>( Map.of( "error", "Wrong token!" )
+                , HttpStatus.BAD_REQUEST );
+
+    }
+
+    @JsonIgnore
+    public ArrayList<Ticket> getPurchasedTickets() {
+        return purchasedTickets;
+    }
+
+    @JsonIgnore
+    public void setPurchasedTickets( ArrayList<Ticket> purchasedTickets ) {
+        this.purchasedTickets = purchasedTickets;
+    }
+
+    @JsonIgnore
+    public int getSWITCH_PRICE() {
+        return SWITCH_PRICE;
+    }
+
+    @JsonIgnore
+    public int getHIGHER_PRICE() {
+        return HIGHER_PRICE;
+    }
+
+    @JsonIgnore
+    public int getLOWER_PRICE() {
+        return LOWER_PRICE;
     }
 
     public int getTotal_rows() {
@@ -39,11 +126,11 @@ public class Room {
         this.total_columns = total_columns;
     }
 
-    public ArrayList<Seats> getAvailable_seats() {
+    public ArrayList<Seat> getAvailable_seats() {
         return available_seats;
     }
 
-    public void setAvailable_seats( ArrayList<Seats> available_seats ) {
+    public void setAvailable_seats( ArrayList<Seat> available_seats ) {
         this.available_seats = available_seats;
     }
 }

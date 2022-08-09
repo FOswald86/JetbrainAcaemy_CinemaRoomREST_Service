@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/539847/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Thu, 04 Aug 2022 20:24:56 UTC
+update_date: Tue, 09 Aug 2022 07:47:13 UTC
 stages:
 - id: 945
   step: 13375
@@ -13,7 +13,7 @@ stages:
   is_completed: true
 - id: 947
   step: 13377
-  is_completed: false
+  is_completed: true
 - id: 948
   step: 13378
   is_completed: false
@@ -129,20 +129,20 @@ topics:
     theory_id: 7917
   - title: Dependency management
     theory_id: 5076
-  - title: Web development
-    theory_id: 13931
   - title: Multidimensional array
     theory_id: 1933
+  - title: Web development
+    theory_id: 13931
   - title: External resources
     theory_id: 6216
   - title: Libraries
     theory_id: 8504
   - title: Frameworks
     theory_id: 6701
-  - title: JSON
-    theory_id: 6854
   - title: YAML
     theory_id: 12722
+  - title: JSON
+    theory_id: 6854
   - title: Introduction to software architecture
     theory_id: 15368
   - title: MVC
