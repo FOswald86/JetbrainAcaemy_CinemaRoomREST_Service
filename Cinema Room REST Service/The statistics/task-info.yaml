@@ -90,29 +90,6 @@ files:
         }
     }
   learner_created: false
-- name: src/cinema/AvailableSeat.java
-  visible: true
-  text: |-
-    package cinema;
-
-    public class AvailableSeat extends Seat {
-
-        private int price;
-
-        public AvailableSeat(int row, int column, int price) {
-            super(row, column);
-            this.price = price;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public void setPrice(int price) {
-            this.price = price;
-        }
-    }
-  learner_created: false
 - name: src/cinema/Room.java
   visible: true
   text: |-
@@ -168,83 +145,6 @@ files:
 
         public void setAvailable_seats(List<AvailableSeat> available_seats) {
             this.available_seats = available_seats;
-        }
-    }
-  learner_created: false
-- name: src/cinema/RoomController.java
-  visible: true
-  text: |-
-    package cinema;
-
-    import org.springframework.web.bind.annotation.GetMapping;
-    import org.springframework.web.bind.annotation.PostMapping;
-    import org.springframework.web.bind.annotation.RequestBody;
-    import org.springframework.web.bind.annotation.RestController;
-
-    @RestController
-    public class RoomController {
-
-        private final int TOTAL_ROWS = 9;
-        private final int TOTAL_COLUMNS = 9;
-        Room room = new Room(TOTAL_ROWS, TOTAL_COLUMNS);
-
-        @GetMapping("/seats")
-        public Room getRoom() {
-            return room;
-        }
-
-        @PostMapping("/purchase")
-        public AvailableSeat buyTicket(@RequestBody Seat seat) {
-            if (seat.getRow() < 1 || seat.getRow() > TOTAL_ROWS || seat.getColumn() < 1 || seat.getColumn() > TOTAL_COLUMNS) {
-                throw new SeatException("The number of a row or a column is out of bounds!");
-            }
-
-            for (int i = 0; i < room.getAvailable_seats().size(); i++) {
-                AvailableSeat item = room.getAvailable_seats().get(i);
-                if (item.getRow() == seat.getRow() && item.getColumn() == seat.getColumn()) {
-                    room.getAvailable_seats().remove(i);
-                    return item;
-                }
-            }
-
-            throw new SeatException("The ticket has been already purchased!");
-        }
-    }
-  learner_created: false
-- name: src/cinema/SeatException.java
-  visible: true
-  text: |-
-    package cinema;
-
-    import org.springframework.http.HttpStatus;
-    import org.springframework.web.bind.annotation.ResponseStatus;
-
-    @ResponseStatus
-    public class SeatException extends RuntimeException {
-
-        SeatException(String message) {
-            super(message);
-        }
-    }
-  learner_created: false
-- name: src/cinema/ServiceError.java
-  visible: true
-  text: |-
-    package cinema;
-
-    import org.springframework.http.HttpStatus;
-    import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.ControllerAdvice;
-    import org.springframework.web.bind.annotation.ExceptionHandler;
-
-    import java.util.Map;
-
-    @ControllerAdvice
-    public class ServiceError {
-
-        @ExceptionHandler
-        public ResponseEntity<Map<String,String>> handleAllException(SeatException e) {
-            return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
   learner_created: false
@@ -587,6 +487,98 @@ files:
         };
     }
   learner_created: false
+- name: src/cinema/Ticket.java
+  visible: true
+  text: |
+    package cinema;
+
+    import java.util.UUID;
+
+    class Ticket {
+
+        private UUID token;
+        private Seat ticket;
+
+        public Ticket() {
+        }
+
+        public Ticket( Seat ticket ) {
+            this.token = UUID.randomUUID();
+            this.ticket = ticket;
+        }
+
+        public UUID getToken() {
+            return token;
+        }
+
+        public void setToken( UUID token ) {
+            this.token = token;
+        }
+
+        public Seat getTicket() {
+            return ticket;
+        }
+
+        public void setTicket( Seat ticket ) {
+            this.ticket = ticket;
+        }
+    }
+
+    class ReturnedTicket {
+
+        private Seat returned_ticket;
+
+        public ReturnedTicket( Seat returned_ticket ) {
+            this.returned_ticket = returned_ticket;
+        }
+
+        public Seat getReturned_ticket() {
+            return returned_ticket;
+        }
+
+        public void setReturned_ticket( Seat returned_ticket ) {
+            this.returned_ticket = returned_ticket;
+        }
+    }
+  learner_created: true
+- name: src/cinema/Controller.java
+  visible: true
+  text: |-
+    package cinema;
+
+    import org.springframework.boot.web.servlet.error.ErrorController;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
+
+    @RestController
+    public class Controller implements ErrorController {
+
+        private final int TOTAL_ROWS = 9, TOTAL_COLUMNS = 9;
+        Room cinemaRoom = new Room( TOTAL_ROWS, TOTAL_COLUMNS );
+
+        @GetMapping("/seats")
+        public Room getAvailableSeats() {
+            return cinemaRoom;
+        }
+
+        @PostMapping("/purchase")
+        public ResponseEntity<?> purchaseSeat( @RequestBody Seat seat ) {
+            return cinemaRoom.purchase( seat );
+        }
+
+        @PostMapping("/return")
+        public ResponseEntity<?> purchaseSeat( @RequestBody Ticket ticket ) {
+            return cinemaRoom.refund( ticket );
+        }
+
+    }
+  learner_created: true
+- name: src/cinema/Statistic.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13378#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Tue, 09 Aug 2022 14:19:31 UTC
 record: -1

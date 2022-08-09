@@ -25,4 +25,9 @@ public class Controller implements ErrorController {
         return cinemaRoom.refund( ticket );
     }
 
+    @PostMapping("/stats")
+    public ResponseEntity<?> statistics( @RequestParam(value = "password", required = false) String password ) {
+        return cinemaRoom.getStatistics( password );
+    }
+
 }

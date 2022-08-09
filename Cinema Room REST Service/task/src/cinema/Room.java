@@ -23,6 +23,9 @@ public class Room {
         initAllSeats( total_rows, total_columns );
     }
 
+    public Room() {
+    }
+
     private void initAllSeats( int total_rows, int total_columns ) {
         for ( int i = 1; i <= total_rows; i++ ) {
             for ( int j = 1; j <= total_columns; j++ ) {
@@ -48,9 +51,11 @@ public class Room {
             seat = this.getAvailable_seats().get( i );
 
             if ( seat.getRow() == row && seat.getColumn() == column ) {
+
                 Ticket ticket = new Ticket( seat );
                 this.getPurchasedTickets().add( ticket );
                 this.getAvailable_seats().remove( i );
+
                 return new ResponseEntity<>( ticket, HttpStatus.OK );
             }
         }
@@ -63,13 +68,13 @@ public class Room {
     public ResponseEntity<?> refund( Ticket ticket ) {
 
         // search for + restore available seat + remove sold ticket
-        for ( int i = 0; i < purchasedTickets.size(); i++ ) {
+        for ( int i = 0; i < this.purchasedTickets.size(); i++ ) {
 
-            if ( purchasedTickets.get( i ).getToken().equals( ticket.getToken() ) ) {
+            if ( this.purchasedTickets.get( i ).getToken().equals( ticket.getToken() ) ) {
 
-                available_seats.add( purchasedTickets.get( i ).getTicket() );
-                ReturnedTicket returned_ticket = new ReturnedTicket( purchasedTickets.get( i ).getTicket() );
-                purchasedTickets.remove( purchasedTickets.get( i ) );
+                this.available_seats.add( this.purchasedTickets.get( i ).getTicket() );
+                ReturnedTicket returned_ticket = new ReturnedTicket( this.purchasedTickets.get( i ).getTicket() );
+                this.purchasedTickets.remove( this.purchasedTickets.get( i ) );
 
                 return new ResponseEntity<>( returned_ticket, HttpStatus.OK );
             }
@@ -78,6 +83,30 @@ public class Room {
         // if not found
         return new ResponseEntity<>( Map.of( "error", "Wrong token!" )
                 , HttpStatus.BAD_REQUEST );
+
+    }
+
+    public ResponseEntity<?> getStatistics( String password ) {
+
+        if ( password != null && password.equals( "super_secret" ) ) {
+
+            Statistic statistic = new Statistic();
+            statistic.setNumber_of_available_seats( this.available_seats.size() );
+            statistic.setNumber_of_purchased_tickets( this.purchasedTickets.size() );
+
+            int temp = 0;
+            for ( int i = 0; i < this.purchasedTickets.size(); i++ ) {
+                temp += this.purchasedTickets.get( i ).getTicket().getPrice();
+            }
+            statistic.setCurrent_income( temp );
+
+            return new ResponseEntity<>( statistic, HttpStatus.OK );
+
+        } else {
+
+            return new ResponseEntity<>( Map.of( "error", "The password is wrong!" )
+                    , HttpStatus.UNAUTHORIZED );
+        }
 
     }
 
@@ -129,4 +158,6 @@ public class Room {
     public void setAvailable_seats( ArrayList<Seat> available_seats ) {
         this.available_seats = available_seats;
     }
+
+
 }
