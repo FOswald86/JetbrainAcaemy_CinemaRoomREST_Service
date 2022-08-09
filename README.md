@@ -14,6 +14,6 @@ https://www.postman.com/downloads/
 import my testingKit and get started  
 https://github.com/FOswald86/JetbrainAcaemy_CinemaRoomREST_Service/blob/main/CinemaRoomRestService.postman_collection.json  
 
-<img src="https://github.com/FOswald86/JetbrainAcademy_SimpleBankingSystem/blob/main/SimpleBankingSystem.gif" width="800" height="500" />  
+<img src="https://github.com/FOswald86/JetbrainAcaemy_CinemaRoomREST_Service/blob/main/ezgif.com-gif-maker.gif" width="800" height="500" />  
 
 https://hyperskill.org/projects/189    
