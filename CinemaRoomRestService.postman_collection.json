@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "7b9181d8-755c-4c32-b3f8-6a0bc4860fa5",
+		"name": "CinemaRoomRestService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18653938"
+	},
+	"item": [
+		{
+			"name": "localhost:28852/purchase",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"row\": 1,\r\n    \"column\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:28852/purchase",
+					"host": [
+						"localhost"
+					],
+					"port": "28852",
+					"path": [
+						"purchase"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:28852/seats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:28852/seats",
+					"host": [
+						"localhost"
+					],
+					"port": "28852",
+					"path": [
+						"seats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:28852/return",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\": \"9948b74a-3c05-4798-ae05-db14b35aa200\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:28852/return",
+					"host": [
+						"localhost"
+					],
+					"port": "28852",
+					"path": [
+						"return"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:28852/stats?password=super_secret",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:28852/stats?password=super_secret",
+					"host": [
+						"localhost"
+					],
+					"port": "28852",
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "password",
+							"value": "super_secret"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
